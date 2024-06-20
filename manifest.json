@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Mini Dictionary",
+  "description": "Just a mini dictionary",
+  "version": "1.0",
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [
+    {
+        "matches": ["<all_urls>"],
+        "js": ["scripts/content.js"]
+    }
+  ]
+}
