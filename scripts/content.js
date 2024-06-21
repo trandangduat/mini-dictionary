@@ -20,10 +20,14 @@ async function handleMouseUp(event) {
             const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${selection}`);
             const lookUpData = await response.json();
             const word = lookUpData[0].word;
+            const phonetics = lookUpData[0].phonetic;
             const definitions = lookUpData[0].meanings.map(definition => definition.definitions[0].definition);
             const popupHTMLContent = `
                 <span style="color:black;font-weight:bold;">${word}</span>
-                <ul>
+                <br>
+                ${!phonetics ? "" : `<span style="font-weight:light;font-style: italic;">${phonetics}</span>`}
+                <hr>
+                <ul style = "list-style: square inside;">
                     ${definitions.map(definition => `<li>${definition}</li>`).join('')}
                 </ul>
             `;
@@ -35,12 +39,14 @@ async function handleMouseUp(event) {
             else {
                 const popupStyle = `
                     position: fixed;
-                    padding: 10px;
+                    padding: 7px;
                     border: 1px solid #ccc;
                     z-index:9999;
                     background:white;
-                    top:${mousePos.y}px;
-                    left:${mousePos.x}px;
+                    font-family: sans-serif;
+                    max-width: 500px;
+                    top:${mousePos.y + 10}px;
+                    left:${mousePos.x + 10}px;
                 `;
                 document.body.insertAdjacentHTML('beforebegin', ` 
                     <div id="mini-dictionary-popup" style="${popupStyle}">
