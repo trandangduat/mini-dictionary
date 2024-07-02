@@ -23,13 +23,14 @@ async function handleMouseUp(event) {
             const phonetics = lookUpData[0].phonetic;
             const definitions = lookUpData[0].meanings.map(definition => definition.definitions[0].definition);
             const popupHTMLContent = `
-                <span style="color:black;font-weight:bold;">${word}</span>
-                <br>
-                ${!phonetics ? "" : `<span style="font-weight:light;font-style: italic;">${phonetics}</span>`}
-                <hr>
-                <ul style = "list-style: square inside;">
-                    ${definitions.map(definition => `<li>${definition}</li>`).join('')}
-                </ul>
+                <div class="md-card-body">
+                    <h5 class="md-card-title">${word}</h5>
+                    ${!phonetics ? "" : `<h6 class="md-card-subtitle">${phonetics}</h6>`}
+                    <hr class="md-hr">
+                    <ul class="md-list">
+                        ${definitions.map(definition => `<li>• ${definition}</li>`).join('')}
+                    </ul>
+                </div>
             `;
             if (popup) {
                 popup.innerHTML = popupHTMLContent;
@@ -39,17 +40,12 @@ async function handleMouseUp(event) {
             else {
                 const popupStyle = `
                     position: fixed;
-                    padding: 7px;
-                    border: 1px solid #ccc;
-                    z-index:9999;
-                    background:white;
-                    font-family: sans-serif;
-                    max-width: 500px;
-                    top:${mousePos.y + 10}px;
-                    left:${mousePos.x + 10}px;
+                    z-index: 9999;
+                    top: ${mousePos.y + 10}px;
+                    left: ${mousePos.x + 10}px;
                 `;
                 document.body.insertAdjacentHTML('beforebegin', ` 
-                    <div id="mini-dictionary-popup" style="${popupStyle}">
+                    <div id="mini-dictionary-popup" class="md-card" style="${popupStyle}">
                         ${popupHTMLContent}
                     </div>
                 `);
@@ -62,6 +58,50 @@ async function handleMouseUp(event) {
     }
 }
 
+function injectCustomStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .md-card {
+            background-color: #343a40;
+            border-radius: 0.25rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .md-card-body {
+            padding: 1rem;
+        }
+        .md-card-title {
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+        .md-card-subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-top: -0.375rem;
+            margin-bottom: 0.75rem;
+            font-style: italic;
+        }
+        .md-hr {
+            border-top: 1px solid #6c757d;
+            margin: 1rem 0;
+        }
+        .md-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 0;
+        }
+        .md-list li {
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 const main = (() => {
+    injectCustomStyles();
     document.body.addEventListener('mouseup', handleMouseUp);
 })();
